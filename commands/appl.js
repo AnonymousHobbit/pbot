@@ -30,21 +30,17 @@ module.exports.run = async (client, message, args) => {
     }
   }
 
-  const url = `https://discord.com/api/v8/channels/${channel_id}/invites`
-
-  const r = await fetch(url, {
-    method: "POST",
-    headers: {authorization: `Bot ${process.env.TOKEN}`, 'content-type': 'application/json'},
-    body: JSON.stringify({
-       max_age: 0,
-       max_uses: 0,
-       target_type: 2,
-       target_application_id: app_id,
-       temporary: "false"
-    })
+  client.api.channels(channel_id)
+  .invites.post({
+    data: {
+       "max_age": 0,
+       "max_uses": 0,
+       "target_type": 2,
+       "target_application_id": app_id,
+       "temporary": false,
+    }
   })
-
-  r.json().then(invite => {
+  .then((invite) => {
     return message.channel.send(new Discord.MessageEmbed().addField("Use application", `[${invite.target_application.name} on ${invite.channel.name}](<https://discord.gg/${invite.code}>)`))
   })
 }
