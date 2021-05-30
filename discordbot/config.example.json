@@ -1,0 +1,10 @@
+{
+  "token": "",
+  "apiKey": "",
+  "prefix": "/",
+  "apiUrl": "",
+  "msgusers": [],
+  "msgservers": [],
+  "adminusers": [],
+  "allowedGuilds": []
+}

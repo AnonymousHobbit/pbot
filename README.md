@@ -2,16 +2,16 @@
 
 ## Requirements
 1. Discord Bot Token Guide [Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-2. Node.js v12.0.0 or newer
+2. Node.js >= v12.0.0
 
 ## Installation
+### Discord Bot
+* Navigate to `discordbot/` folder and run `npm install`
+* Copy `discordbot/config.example.json` to `discordbot/config.json` and configure it
 
-Install all the dependencies
-
-1. git clone https://github.com/AnonymousHobbit/phack-bot.git
-2. cd phack-bot/
-3. npm install
-
+### Backend
+* Navigate to `discordbot/` folder and run `npm install`
+* Copy `backend/.env.example` to `backend/.env` and configure it
 
 Create .env file to project's root with following variables (user ids separated by space):
 ```

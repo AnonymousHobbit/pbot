@@ -2,4 +2,10 @@ version: "3.9"
 services:
   bot:
     container_name: phackbot
-    build: .
+    build: discordbot/.
+
+  backend:
+    container_name: phackbotApi
+    build: backend/.
+    ports:
+      - "1377:1377"

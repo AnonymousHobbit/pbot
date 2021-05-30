@@ -1,8 +1,7 @@
 const Discord = require("discord.js")
-const fetch = require("node-fetch")
 var config = {
   name: "appl",
-  desc: "Returns invite link",
+  desc: "Returns an invite link",
   usage: "Usage: /appl <channel_id> <application>"
 }
 

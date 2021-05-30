@@ -35,7 +35,7 @@ module.exports.run = async (client, message, args) => {
     }
   });
 
-  message.channel.send(hMessage)
+  return message.channel.send(hMessage)
 }
 
 module.exports.help = {

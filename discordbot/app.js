@@ -2,30 +2,18 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const moment = require('moment');
 const fs = require("fs")
-const sqlite3 = require('sqlite3').verbose();
 const cron = require("cron")
-//Access .env file
+
+//Access config files
 require('dotenv').config()
-
-//Access database
-let db = new sqlite3.Database("./repla_DB", (err) => {
-  if (err) {
-    console.error(err.message);
-  }
-  console.log('Connected to the database');
-});
-
-
-function createDB() {
-  db.run("CREATE TABLE IF NOT EXISTS phack_com (id TEXT, repla TEXT, date TEXT)")
-}
+let config = require("./config.json")
 
 //CommandHandler
 client.commands = new Discord.Collection()
 const cmdFiles = fs.readdirSync("./commands/").filter(file => file.endsWith('.js'))
 
 if(cmdFiles.length <=0){
-  console.log("No commands to load!");
+  console.log("No commands to load");
   return;
 }
 
@@ -39,8 +27,8 @@ cmdFiles.forEach((f, i) => {
 
 
 //variables
-const TOKEN=process.env.TOKEN
-const PREFIX=process.env.PREFIX
+const TOKEN = config.token
+const PREFIX = config.prefix
 
 //==================================================
 //BOT READY
@@ -54,29 +42,26 @@ client.on('ready', () => {
   })
   console.log("=====================\n")
 
-  createDB()
-
   console.log("[Bot ready to use]")
 });
 
-//==================================================
-//BOT COMMANDS
-//==================================================
 
-
-//On message delete send to id.
 client.on("messageDelete", (messageDelete) => {
 
   var member = messageDelete.member.user.tag; //get user who deleted the message
   if (!messageDelete.content.startsWith("/purge")) {
-    var users = process.env.MSGUSERS.split(' ');
+    var msgUsers = config.msgusers;
+
     const delMsg = new Discord.MessageEmbed()
       .setColor("#bdbdbd")
       .setTitle(member)
       .setDescription(messageDelete.content)
-    //Loop over ID:s in .env file
-    for (x of users) {
-      client.users.cache.get(x).send(delMsg);
+
+    //Loop over 'msgservers' in config file
+    if (config.msgservers.includes(messageDelete.guild.id)) {
+      for (x of msgUsers) {
+        client.users.cache.get(x).send(delMsg);
+      }
     }
   }
 });
@@ -90,7 +75,7 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase().substring(1);
 
   let cmd = client.commands.get(command)
-  if (cmd) cmd.run(client, message, args, db)
+  if (cmd) cmd.run(client, message, args, config)
 
 });
 
