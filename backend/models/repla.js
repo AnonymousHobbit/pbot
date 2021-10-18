@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 //Connect to mongodb
-mongoose.connect(process.env.LINEDB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(process.env.REPLADB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(result => {
     console.log('connected to MongoDB')
   })

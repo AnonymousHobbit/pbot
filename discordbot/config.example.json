@@ -1,5 +1,7 @@
 {
   "token": "",
+  "testGuild": "",
+  "clientId": "",
   "apiKey": "",
   "prefix": "/",
   "apiUrl": "",

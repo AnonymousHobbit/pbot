@@ -12,10 +12,10 @@ require('dotenv').config();
 app.listen(port, () => console.log(`phackbot API is currently running on port ${port}...`));
 
 //pages
-const replaApi = require('./routes/line')
+const replaApi = require('./routes/repla')
 
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/v1/lines', replaApi)
+app.use('/v1/repla', replaApi)

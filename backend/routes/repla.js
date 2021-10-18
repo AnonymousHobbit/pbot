@@ -3,30 +3,31 @@ const express = require('express');
 const router = express.Router();
 
 //Database models
-const Line = require('../models/lines')
+const Repla = require('../models/repla')
 
 router.get("/", async (req, res) => {
-  const allLines = await Line.find({}, {_id: 0, repla: 1, date: 1})
+  const allReplas = await Repla.find({}, {_id: 0, repla: 1, date: 1})
 
-  if (allLines.length === 0) return res.json("No Pick-up lines found")
-  return res.json(allLines);
+  if (allReplas.length === 0) return res.json("No Replas found")
+  return res.json(allReplas);
 })
 
 router.get("/random", async (req, res) => {
-  const randLine = await Line.aggregate([{ $sample: { size: 1 } }, {$project: {_id: 0, repla: 1, date: 1}}])
-  return res.json(randLine)
+  const randRepla = await Repla.aggregate([{ $sample: { size: 1 } }, {$project: {_id: 0, repla: 1, date: 1}}])
+  return res.json(randRepla)
 })
 
 router.post("/", async (req, res) => {
+  console.log(req.body)
   try {
-    if (req.headers.phackauth === process.env.LINEDB_KEY) {
-      const line = new Line({
+    if (req.headers.phackauth === process.env.REPLADB_KEY) {
+      const repla = new Repla({
         author: req.body.author,
         repla: req.body.repla,
         date: new Date()
       })
-      const savedLine = await line.save()
-      return res.json(savedLine)
+      const savedRepla = await repla.save()
+      return res.json(savedRepla)
     } else {
       return res.sendStatus(401)
     }
@@ -37,9 +38,9 @@ router.post("/", async (req, res) => {
 
 router.delete("/", async (req, res) => {
   try {
-    if (req.headers.phackauth === process.env.LINEDB_KEY) {
+    if (req.headers.phackauth === process.env.ReplaDB_KEY) {
       const id = req.body.id
-      const delLine = await Line.deleteOne({_id: id}, {})
+      const delRepla = await Repla.deleteOne({_id: id}, {})
       return res.sendStatus(200);
     } else {
       return res.sendStatus(401)
