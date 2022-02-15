@@ -16,7 +16,8 @@ for (const file of commandFiles) {
 (async () => {
 	try {
 		await rest.put(
-			Routes.applicationGuildCommands(clientId, testGuild),
+			Routes.applicationCommands(clientId),
+			//Routes.applicationGuildCommands(clientId, testGuild),
 			{ body: commands },
 		);
 

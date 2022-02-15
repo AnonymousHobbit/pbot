@@ -58,7 +58,11 @@ client.on('interactionCreate', async interaction => {
 
 client.on("messageDelete", (messageDelete) => {
 
-  var member = messageDelete.member.user.tag; //get user who deleted the message
+  try {
+    var member = messageDelete.member.user.tag;
+  } catch (err) {
+    return
+  }
 
   if (!messageDelete.content.startsWith("/purge")) {
     var msgUsers = config.msgusers;
@@ -74,7 +78,7 @@ client.on("messageDelete", (messageDelete) => {
         try {
           client.users.cache.get(x).send({ embeds: [delMsg] });
         } catch (err) {
-          console.log(err);
+          continue;
         }
       }
     }
