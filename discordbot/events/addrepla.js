@@ -15,12 +15,12 @@ module.exports = {
 		if (!allowedGuilds.includes(interaction.guildId)) {
 			await interaction.reply("This guild is not allowed to add to the database")
 		}
+		
 		const author = interaction.member.id;
 		const repla = interaction.options.getString("iskurepla");
 
 		try {
 			const response = await axios.post(apiUrl, {author: author, repla: repla}, {headers: {phackauth: apiKey}})
-			console.log(response)
 			await interaction.reply(`New repla added: "${response.data.repla}"`);
 		} catch (err) {
 			await interaction.reply(`Request to backend failed with ${err}`)

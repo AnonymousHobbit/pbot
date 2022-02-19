@@ -3,6 +3,8 @@ services:
   bot:
     container_name: phackbot
     build: discordbot/.
+    environment:
+      DC_ENV: production
 
   backend:
     container_name: phackbotApi

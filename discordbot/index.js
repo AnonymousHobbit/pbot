@@ -1,44 +1,57 @@
 const { Client, Intents, Collection, MessageEmbed } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
-const moment = require('moment');
 const fs = require("fs");
-const cron = require("cron");
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 
 //Access config files
-require('dotenv').config();
-let config = require("./config.json");
+const { token, clientId, testGuild } = require("./config.json");
 
 //CommandHandler
 client.commands = new Collection();
-const cmdFiles = fs.readdirSync("./events/").filter(file => file.endsWith('.js'));
+const commands = []
+const commandFiles = fs.readdirSync("./events/").filter(file => file.endsWith('.js'));
 
-if(cmdFiles.length <=0){
+if(commandFiles.length <=0){
   console.log("No commands to load");
   return;
 }
 
-console.log(`Loaded ${cmdFiles.length} commands from ./events/`);
+console.log(`Loaded ${commandFiles.length} commands from ./events/`);
 
-for (const file of cmdFiles) {
+for (const file of commandFiles) {
   let props = require(`./events/${file}`);
+  commands.push(props.data.toJSON());
   client.commands.set(props.data.name, props);
 };
 
-
-
-//Variables
-const TOKEN = config.token;
-
 //Ready to use
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}\n`);
-  console.log("=======Servers=======")
-  client.guilds.cache.forEach(guild => {
-    console.log(guild.name)
-  })
-  console.log("=====================\n")
 
-  console.log("[Bot ready to use]")
+  console.log(`Logged in as ${client.user.tag}\n`);
+
+  const rest = new REST({ version: '9' }).setToken(token);
+
+  (async () => {
+    try {
+      if (process.env.DC_ENV === "production") {
+        await rest.put(
+          Routes.applicationCommands(clientId),
+          { body: commands },
+        );
+        console.log('Successfully registered application commands globally.');
+      } else {
+        await rest.put(
+          Routes.applicationGuildCommands(clientId, testGuild),
+          { body: commands },
+        );
+        console.log('Successfully registered application commands for test guild.'); 
+      }
+      
+    } catch (error) {
+      console.error(error);
+    }
+  })();
 });
 
 client.on('interactionCreate', async interaction => {
@@ -86,4 +99,4 @@ client.on("messageDelete", (messageDelete) => {
 });
 
 
-client.login(TOKEN);
+client.login(token);

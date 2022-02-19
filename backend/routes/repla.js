@@ -12,13 +12,7 @@ router.get("/", async (req, res) => {
   return res.json(allReplas);
 })
 
-router.get("/random", async (req, res) => {
-  const randRepla = await Repla.aggregate([{ $sample: { size: 1 } }, {$project: {_id: 0, repla: 1, date: 1}}])
-  return res.json(randRepla)
-})
-
 router.post("/", async (req, res) => {
-  console.log(req.body)
   try {
     if (req.headers.phackauth === process.env.REPLADB_KEY) {
       const repla = new Repla({
@@ -40,14 +34,26 @@ router.delete("/", async (req, res) => {
   try {
     if (req.headers.phackauth === process.env.ReplaDB_KEY) {
       const id = req.body.id
-      const delRepla = await Repla.deleteOne({_id: id}, {})
+      const delRepla = await Repla.deleteOne({ _id: id }, {})
       return res.sendStatus(200);
     } else {
       return res.sendStatus(401)
     }
-  } catch(err) {
+  } catch (err) {
     return res.sendStatus(500);
   }
 })
+
+router.get("/amount", async (req, res) => {
+  const amount = await Repla.find({}, {_id: 0, repla: 1, date: 1}).countDocuments()
+  return res.json(amount);
+})
+
+router.get("/random", async (req, res) => {
+  const randRepla = await Repla.aggregate([{ $sample: { size: 1 } }, {$project: {_id: 0, repla: 1, date: 1}}])
+  return res.json(randRepla)
+})
+
+
 
 module.exports = router;
