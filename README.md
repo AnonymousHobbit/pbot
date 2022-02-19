@@ -12,7 +12,7 @@
 ### Backend
 * Navigate to `backend/` folder and run `npm install`
 * Copy `backend/.env.example` to `backend/.env` and configure it
-* API endpoints start with '/v1/repla'
+* API endpoints start with '/api/v1'
 
 ## Starting the bot
 * docker-compose up -d

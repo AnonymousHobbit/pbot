@@ -18,4 +18,4 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/v1/repla', replaApi)
+app.use('/api/v1/', replaApi)
