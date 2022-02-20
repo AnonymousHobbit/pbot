@@ -15,7 +15,7 @@ module.exports = {
 		const repla_to_add = interaction.options.getString("add");
 		if (repla_to_add) {
 			if (!allowedGuilds.includes(interaction.guildId)) {
-				await interaction.reply("This guild is not allowed to add to the database")
+				return await interaction.reply("This guild is not allowed to add to the database")
 			}
 			const author = interaction.member.id;
 
