@@ -14,10 +14,10 @@ module.exports = {
         const amount = interaction.options.getString("amount");
         try {
             await channel.bulkDelete(amount, true);
-            await interaction.reply(`Removed ${amount} messages`);
+            return await interaction.reply(`Removed ${amount} messages`);
         } catch (error) {
             console.log(error);
-            await interaction.reply(`Failed to remove messages`)
+            return await interaction.reply(`Failed to remove messages`)
         }
     },
 };

@@ -18,12 +18,12 @@ module.exports = {
             try {
                 const response = await axios.get(`${apiUrl}/amount`);
                 console.log(response.data)
-                await interaction.reply(`There are ${response.data} replas in the database`);
+                return await interaction.reply(`There are ${response.data} replas in the database`);
             } catch (err) {
-                await interaction.reply(`Request to backend failed with ${err}`)
+                return await interaction.reply(`Request to backend failed with ${err}`)
             }
         } else {
-            await interaction.reply("Invalid info");
+            return await interaction.reply("Invalid info");
         }
     },
 };

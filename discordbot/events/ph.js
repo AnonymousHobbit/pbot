@@ -24,10 +24,10 @@ module.exports = {
         .setTitle(randomVid.title)
         .setDescription(randomVid.url)
 
-      await interaction.reply({ embeds: [ embed ]});
+      return await interaction.reply({ embeds: [ embed ]});
     } catch (error) {
       console.log(error);
-      await interaction.reply("No videos found");
+      return await interaction.reply("No videos found");
     }
 	},
 };
