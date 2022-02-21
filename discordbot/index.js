@@ -36,7 +36,7 @@ client.on('ready', () => {
     try {
       if (process.env.DC_ENV === "production") {
         await rest.put(
-          Routes.applicationCommands(clientId),
+          Routes.applicationCommands(config.clientId),
           { body: commands },
         );
         console.log('Successfully registered application commands globally.');
