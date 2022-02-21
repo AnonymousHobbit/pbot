@@ -30,7 +30,7 @@ client.on('ready', () => {
 
   console.log(`Logged in as ${client.user.tag}\n`);
 
-  const rest = new REST({ version: '9' }).setToken(token);
+  const rest = new REST({ version: '9' }).setToken(config.token);
 
   (async () => {
     try {
