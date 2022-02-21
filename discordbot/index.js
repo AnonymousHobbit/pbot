@@ -5,7 +5,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
 //Access config files
-const { token, clientId, testGuild } = require("./config.json");
+const config = require("./config.json");
 
 //CommandHandler
 client.commands = new Collection();
@@ -42,7 +42,7 @@ client.on('ready', () => {
         console.log('Successfully registered application commands globally.');
       } else {
         await rest.put(
-          Routes.applicationGuildCommands(clientId, testGuild),
+          Routes.applicationGuildCommands(config.clientId, config.testGuild),
           { body: commands },
         );
         console.log('Successfully registered application commands for test guild.'); 
@@ -99,4 +99,4 @@ client.on("messageDelete", (messageDelete) => {
 });
 
 
-client.login(token);
+client.login(config.token);
