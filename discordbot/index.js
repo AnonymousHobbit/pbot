@@ -14,7 +14,6 @@ const commandFiles = fs.readdirSync("./events/").filter(file => file.endsWith('.
 
 if(commandFiles.length <=0){
   console.log("No commands to load");
-  return;
 }
 
 console.log(`Loaded ${commandFiles.length} commands from ./events/`);

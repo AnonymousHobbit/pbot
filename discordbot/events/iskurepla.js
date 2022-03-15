@@ -9,9 +9,26 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName("add")
 				.setDescription("Add a new repla to the database")
+		)
+		.addStringOption(option =>
+			option.setName("info")
+				.setDescription("Information about the database")
 		),
 	async execute(interaction) {
 		
+		const information = interaction.options.getString("info");
+		if (information) {
+			if (information === "amount") {
+				try {
+					const response = await axios.get(`${apiUrl}/amount`);
+					return await interaction.reply(`There are ${response.data} replas in the database`);
+				} catch (err) {
+					return await interaction.reply(`Request to backend failed with ${err}`);
+				}
+			}
+		}
+		
+
 		const repla_to_add = interaction.options.getString("add");
 		if (repla_to_add) {
 			if (!allowedGuilds.includes(interaction.guildId)) {
