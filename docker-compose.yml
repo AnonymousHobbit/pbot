@@ -1,13 +1,13 @@
 version: "3.9"
 services:
   bot:
-    container_name: phackbot
+    container_name: pbot
     build: discordbot/.
     environment:
       DC_ENV: production
 
   backend:
-    container_name: phackbotApi
+    container_name: pbotApi
     build: backend/.
     ports:
       - "1377:1377"
