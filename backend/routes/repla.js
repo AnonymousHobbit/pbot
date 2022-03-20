@@ -6,7 +6,7 @@ const router = express.Router();
 const Repla = require('../models/repla');
 
 router.use((req, res, next) => {
-  if (!req.headers.phackauth || req.headers.phackauth !== process.env.REPLADB_KEY) {
+  if (!req.headers.authorization || req.headers.authorization !== process.env.REPLADB_KEY) {
     return res.status(401).send({ error: "Unauthorized" });
   }
   next()

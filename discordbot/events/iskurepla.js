@@ -20,7 +20,7 @@ module.exports = {
 		if (information) {
 			if (information === "amount") {
 				try {
-					const response = await axios.get(`${apiUrl}/amount`, { headers: { phackauth: apiKey } });
+					const response = await axios.get(`${apiUrl}/amount`, { headers: { authorization: apiKey } });
 					return await interaction.reply(`There are ${response.data} replas in the database`);
 				} catch (err) {
 					return await interaction.reply(`Request to backend failed with ${err}`);
@@ -37,14 +37,14 @@ module.exports = {
 			const author = interaction.member.id;
 
 			try {
-				const response = await axios.post(apiUrl, { author: author, repla: repla_to_add }, { headers: { phackauth: apiKey } });
+				const response = await axios.post(apiUrl, { author: author, repla: repla_to_add }, { headers: { authorization: apiKey } });
 				return await interaction.reply(`New repla added: "${response.data.repla}"`);
 			} catch (err) {
 				return await interaction.reply(`Request to backend failed with ${err}`);
 			}
 		}
 		
-		const repla = await axios.get(`${apiUrl}/random`, { headers: { phackauth: apiKey } });
+		const repla = await axios.get(`${apiUrl}/random`, { headers: { authorization: apiKey } });
 		return await interaction.reply(repla.data[0].repla);
 	},
 };
