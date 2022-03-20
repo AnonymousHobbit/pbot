@@ -6,7 +6,7 @@ const pornhub = new PornHub()
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('phub')
-		.setDescription('Searches a video from pornhub')
+		.setDescription('Search a video from Pornhub')
     .addStringOption(option =>
 			option.setName("category")
 			.setDescription("What category you want to watch?")

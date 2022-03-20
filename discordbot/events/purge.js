@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('purge')
-        .setDescription('Adds new iskurepla to the database')
+        .setDescription('Purge messages')
         .addStringOption(option =>
             option.setName("amount")
                 .setDescription("Amount of messages to purge")
@@ -17,7 +17,7 @@ module.exports = {
             return await interaction.reply(`Removed ${amount} messages`);
         } catch (error) {
             console.log(error);
-            return await interaction.reply(`Failed to remove messages`)
+            return await interaction.reply(`Failed to remove messages`);
         }
     },
 };
