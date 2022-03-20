@@ -1,18 +1,15 @@
-# pHack-bot
-
-## Requirements
-1. Discord Bot Token Guide [Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-2. Node.js >= v12.0.0
+# pbot
 
 ## Installation
 ### Discord Bot
-* Navigate to `discordbot/` folder and run `npm install`
-* Copy `discordbot/config.example.json` to `discordbot/config.json` and configure it
+* Install npm modules in `discord/` with `npm install`
+* Create a new `config.json` file from `config.example.json`
 
 ### Backend
 * Navigate to `backend/` folder and run `npm install`
-* Copy `backend/.env.example` to `backend/.env` and configure it
-* API endpoints start with '/api/v1'
+* Create a new `.env` file from `.env.example`
 
 ## Starting the bot
-* docker-compose up -d
+```
+$ docker-compose up -d --build
+```
