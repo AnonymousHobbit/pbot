@@ -5,7 +5,18 @@ const router = express.Router();
 //Database models
 const Repla = require('../models/repla');
 
+router.use('/', (req, res, next) => {
+  if (req.method === 'GET' && req.headers.authorization && req.headers.authorization === process.env.REPLADB_KEY_GUEST) {
+    req.allowed = true;
+  }
+  next();
+})
+
 router.use((req, res, next) => {
+  if (req.allowed) {
+    return next()
+  }
+  
   if (!req.headers.authorization || req.headers.authorization !== process.env.REPLADB_KEY) {
     return res.status(401).send({ error: "Unauthorized" });
   }
