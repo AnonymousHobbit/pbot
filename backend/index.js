@@ -9,13 +9,15 @@ const cors = require('cors');
 require('dotenv').config();
 
 //app listen
-app.listen(port, () => console.log(`phackbot API is currently running on port ${port}...`));
+app.listen(port, () => console.log(`pbot API is currently running on port ${port}...`));
 
 //pages
 const replaApi = require('./routes/repla');
+const tripApi = require('./routes/trip');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/v1/', replaApi);
+app.use('/replas', replaApi);
+app.use('/trips', tripApi);

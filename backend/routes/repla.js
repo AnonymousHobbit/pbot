@@ -3,10 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 //Database models
-const Repla = require('../models/repla');
+const { Repla } = require('../models/model');
 
 router.use('/', (req, res, next) => {
-  if (req.method === 'GET' && req.headers.authorization && req.headers.authorization === process.env.REPLADB_KEY_GUEST) {
+  if (req.method === 'GET' && req.headers.authorization && req.headers.authorization === process.env.DB_KEY_GUEST) {
     req.allowed = true;
   }
   next();
@@ -17,7 +17,7 @@ router.use((req, res, next) => {
     return next()
   }
   
-  if (!req.headers.authorization || req.headers.authorization !== process.env.REPLADB_KEY) {
+  if (!req.headers.authorization || req.headers.authorization !== process.env.DB_KEY) {
     return res.status(401).send({ error: "Unauthorized" });
   }
   next()
