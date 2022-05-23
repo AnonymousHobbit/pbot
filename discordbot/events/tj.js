@@ -59,7 +59,7 @@ module.exports = {
                     return await interaction.reply(response.data.error);
                 }
 
-                return await interaction.reply(`New trip added: "${response.data.name}"`);
+                return await interaction.reply(`New event added: "${response.data.name}"`);
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);
             }
@@ -67,16 +67,24 @@ module.exports = {
 
         if (cmd === "get") {
             const name = interaction.options.getString("name");
+            
+            if (!name) {
+                return await interaction.reply("Please specify a name");
+            }
             try {
                 const response = await axios.get(`${apiUrl}/trips?name=${name}`, { headers: { authorization: apiKey } });
-                console.log(response.data)
+                
+                if (response_data.error) {
+                    return await interaction.reply(response_data.error);
+                }
+
                 let trip_date = response.data[0].date;
                 let trip_name = response.data[0].name;
 
                 //calculate days until trip
                 const until_trip = DateTime.fromISO(trip_date).diff(DateTime.now(), "days").toObject();
-                console.log(until_trip)
-                return await interaction.reply(`TJ of "${trip_name}" is currently ${Math.round(until_trip.days+1)}`);
+                
+                return await interaction.reply(`TJ of "${trip_name}" is currently ${Math.round(until_trip.days+1)} days`);
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);
             }

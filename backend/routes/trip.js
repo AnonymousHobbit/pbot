@@ -22,14 +22,14 @@ router.get("/", async (req, res) => {
     //Find trip by name
     if (req.query.name) {
         const trips = await Trip.find({ name: req.query.name }, {_id: 1, name: 1, date: 1});
-        if (trips.length === 0) return res.send({ error: "No trips found" });
+        if (trips.length === 0) return res.send({ error: `Event ${req.query.name} not found` });
         return res.json(trips);
     }
 
     // return all trips
     const allTrips = await Trip.find({}, {_id: 1, name: 1, date: 1});
 
-    if (allTrips.length === 0) return res.send({ error: "No trips found" });
+    if (allTrips.length === 0) return res.send({ error: "No events found" });
     return res.json(allTrips);
 })
 
@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
     }
 
     const trip_already_exists = await Trip.findOne({ name: name });
-
+    
     if (trip_already_exists) {
         return res.send({ error: `Trip "${name}" already exists` });
     }
