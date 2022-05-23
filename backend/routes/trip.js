@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
         if (trips.length === 0) return res.send({ error: `Event ${req.query.name} not found` });
         return res.json(trips);
     }
-
+    
     // return all trips
     const allTrips = await Trip.find({}, {_id: 1, name: 1, date: 1});
 

@@ -2,19 +2,20 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const axios = require("axios");
 const { apiUrl, apiKey, allowedGuilds } = require('../config.json');
 const { DateTime } = require("luxon");
+const { MessageEmbed } = require('discord.js');
 
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('tj')
-        .setDescription('Calculate how many days until next trip')
+        .setDescription('Calculate how many days until next event')
         .addSubcommand(subcommand =>
             subcommand
                 .setName("get")
-                .setDescription("Get a trip from the database")
+                .setDescription("Get an event from the database")
                 .addStringOption(option =>
                     option.setName("name")
-                        .setDescription("Name of the trip")
+                        .setDescription("Name of the event")
                 )
         )
         .addSubcommand(subcommand =>
@@ -23,12 +24,18 @@ module.exports = {
                 .setDescription("Add a new trip to the database")
                 .addStringOption(option =>
                     option.setName("name")
-                        .setDescription("Name of the trip")      
+                        .setDescription("Name of the event")      
                 )
                 .addStringOption(option =>
                     option.setName("date")
-                        .setDescription("Date of the trip. Format: DD-MM-YYYY")
+                        .setDescription("Date of the event. Format: DD-MM-YYYY")
                 )
+        
+        )
+        .addSubcommand(subcommand => 
+            subcommand
+                .setName("list")
+                .setDescription("List all events in the database")
         ),
     async execute(interaction) {
         const cmd = interaction.options.getSubcommand();
@@ -65,7 +72,7 @@ module.exports = {
             }
         }
 
-        if (cmd === "get") {
+        else if (cmd === "get") {
             const name = interaction.options.getString("name");
             
             if (!name) {
@@ -74,7 +81,7 @@ module.exports = {
             try {
                 const response = await axios.get(`${apiUrl}/trips?name=${name}`, { headers: { authorization: apiKey } });
                 
-                if (response_data.error) {
+                if (response.data.error) {
                     return await interaction.reply(response_data.error);
                 }
 
@@ -88,6 +95,32 @@ module.exports = {
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);
             }
+        }
+
+        else if (cmd === "list") {
+            try {
+                const response = await axios.get(`${apiUrl}/trips`, { headers: { authorization: apiKey } });
+                if (response.data.error) {
+                    return await interaction.reply(response.data.error);
+                }
+
+                const eventEmbed = new MessageEmbed()
+                    .setTitle("Event list")
+                    .setColor("#0099ff")
+                    .setTimestamp()
+                     
+                response.data.forEach(trip => {
+                    let days = Math.round(DateTime.fromISO(trip.date).diff(DateTime.now(), "days").toObject().days);
+                    eventEmbed.addField(trip.name, "TJ: " + days);
+                });
+
+                return await interaction.reply({ embeds: [eventEmbed] });
+            } catch (err) {
+                return await interaction.reply(`Request to backend failed with ${err}`);
+            }
+        }
+        else {
+            return await interaction.reply("Command not found");
         }
         
     }
