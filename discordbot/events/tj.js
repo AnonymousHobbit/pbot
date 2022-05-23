@@ -110,7 +110,7 @@ module.exports = {
                     .setTimestamp()
                      
                 response.data.forEach(trip => {
-                    let days = Math.round(DateTime.fromISO(trip.date).diff(DateTime.now(), "days").toObject().days);
+                    let days = Math.round(DateTime.fromISO(trip.date).diff(DateTime.now(), "days").toObject().days+1);
                     eventEmbed.addField(trip.name, "TJ: " + days);
                 });
 
