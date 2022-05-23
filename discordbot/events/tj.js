@@ -36,6 +36,15 @@ module.exports = {
             subcommand
                 .setName("list")
                 .setDescription("List all events in the database")
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName("delete")
+                .setDescription("Delete an event from the database")
+                .addStringOption(option =>
+                    option.setName("name")
+                        .setDescription("Name of the event")
+                        )
         ),
     async execute(interaction) {
         const cmd = interaction.options.getSubcommand();
@@ -82,7 +91,7 @@ module.exports = {
                 const response = await axios.get(`${apiUrl}/trips?name=${name}`, { headers: { authorization: apiKey } });
                 
                 if (response.data.error) {
-                    return await interaction.reply(response_data.error);
+                    return await interaction.reply(response.data.error);
                 }
 
                 let trip_date = response.data[0].date;
@@ -115,6 +124,23 @@ module.exports = {
                 });
 
                 return await interaction.reply({ embeds: [eventEmbed] });
+            } catch (err) {
+                return await interaction.reply(`Request to backend failed with ${err}`);
+            }
+        }
+        else if (cmd === "delete") {
+            const name = interaction.options.getString("name");
+            if (!name) {
+                return await interaction.reply("Please specify a name");
+            }
+            try {
+                const response = await axios.delete(`${apiUrl}/trips?name=${name}`, { headers: { authorization: apiKey } });
+                if (response.data.error) {
+                    return await interaction.reply(response.data.error);
+                }
+
+                return await interaction.reply(`Event "${name}" deleted`);
+
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);
             }
