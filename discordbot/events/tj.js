@@ -117,10 +117,11 @@ module.exports = {
                     .setTitle("Event list")
                     .setColor("#0099ff")
                     .setTimestamp()
-                     
+                
+                
                 response.data.forEach(trip => {
                     let days = Math.round(DateTime.fromISO(trip.date).diff(DateTime.now(), "days").toObject().days+1);
-                    eventEmbed.addField(trip.name, "TJ: " + days);
+                    eventEmbed.addField(trip.name, `TJ: ${days} \n Date: ${DateTime.fromISO(trip.date).toFormat("dd-MM-yyyy")}`);
                 });
 
                 return await interaction.reply({ embeds: [eventEmbed] });
