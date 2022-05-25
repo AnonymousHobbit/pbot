@@ -66,7 +66,6 @@ module.exports = {
                 return await interaction.reply("Date must be in format DD-MM-YYYY");
             }
 
-            //return await interaction.reply(`Date is ${date_object.toFormat("dd-MM-yyyy")}`);
             date = date_object.toFormat("dd-MM-yyyy");
             
             try {
@@ -118,12 +117,19 @@ module.exports = {
                     .setColor("#0099ff")
                     .setTimestamp()
                 
-                
+                function date_sort(a, b) {
+                    return DateTime.fromISO(a.date).toMillis() - DateTime.fromISO(b.date).toMillis();
+                }
+
+                //Sort events by date
+                response.data.sort(date_sort);
+
+                //Create an embed
                 response.data.forEach(trip => {
                     let days = Math.round(DateTime.fromISO(trip.date).diff(DateTime.now(), "days").toObject().days+1);
-                    eventEmbed.addField(trip.name, `TJ: ${days} \n Date: ${DateTime.fromISO(trip.date).toFormat("dd-MM-yyyy")}`);
+                    eventEmbed.addField(trip.name, `TJ: ${days} \nDate: ${DateTime.fromISO(trip.date).toFormat("dd-MM-yyyy")}`);
                 });
-
+                
                 return await interaction.reply({ embeds: [eventEmbed] });
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);
