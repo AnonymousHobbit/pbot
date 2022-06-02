@@ -16,15 +16,16 @@ const replaSchema = new mongoose.Schema({
   date: Date
 })
 
-//Schema for trips
-const tripSchema = new mongoose.Schema({
+//Schema for events
+const eventSchema = new mongoose.Schema({
   author: String,
   name: String,
+  participants: [String],
   date: Date
 })
 
 
 const Repla = mongoose.model('Repla', replaSchema)
-const Trip = mongoose.model('Trip', tripSchema)
+const Event = mongoose.model('Trip', eventSchema)
 
-module.exports = { Repla, Trip }
+module.exports = { Repla, Event }

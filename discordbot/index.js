@@ -97,5 +97,4 @@ client.on("messageDelete", (messageDelete) => {
   }
 });
 
-
 client.login(config.token);

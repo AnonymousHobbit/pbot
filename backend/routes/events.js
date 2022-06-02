@@ -4,7 +4,7 @@ const router = express.Router();
 const { DateTime } = require('luxon');
 
 //Database models
-const { Trip } = require('../models/model');
+const { Event } = require('../models/model');
 
 router.use((req, res, next) => {
     if (req.allowed) {
@@ -19,18 +19,23 @@ router.use((req, res, next) => {
 
 router.get("/", async (req, res) => {
     
-    //Find trip by name
+    //Find Event by name
     if (req.query.name) {
-        const trips = await Trip.find({ name: req.query.name }, {_id: 1, name: 1, date: 1});
-        if (trips.length === 0) return res.send({ error: `Event ${req.query.name} not found` });
-        return res.json(trips);
+        const events = await Event.find({ name: req.query.name }, {_id: 1, name: 1, date: 1});
+        if (events.length === 0) return res.send({ error: `Event ${req.query.name} not found` });
+        return res.json(events);
     }
 
-    // return all trips
-    const allTrips = await Trip.find({}, {_id: 1, name: 1, date: 1});
+    // return all Events
+    try {
+        const allEvents = await Event.find({}, { _id: 1, name: 1, date: 1 });
 
-    if (allTrips.length === 0) return res.send({ error: "No events found" });
-    return res.json(allTrips);
+        if (allEvents.length === 0) return res.send({ error: "No events found" });
+        return res.json(allEvents);
+    } catch (err) {
+        return res.sendStatus(500);
+    } 
+    
 })
 
 router.post("/", async (req, res) => {
@@ -45,19 +50,19 @@ router.post("/", async (req, res) => {
             return res.send({ error: "Date is invalid" });
         }
 
-        const trip_already_exists = await Trip.findOne({ name: name });
+        const event_already_exists = await Event.findOne({ name: name });
 
-        if (trip_already_exists) {
+        if (event_already_exists) {
             return res.send({ error: `Event "${name}" already exists` });
         }
 
-        const trip = new Trip({
+        const event = new Event({
             author: req.body.author,
             name: req.body.name,
             date: date_object.toJSDate()
         })
-        const savedTrip = await trip.save()
-        return res.json(savedTrip);
+        const savedEvent = await event.save()
+        return res.json(savedEvent);
     } catch (err) {
         return res.sendStatus(500);
     }
@@ -68,10 +73,10 @@ router.post("/", async (req, res) => {
 router.delete("/", async (req, res) => {
     try {
         const name = req.query.name
-        const trip = await Trip.findOne({ name: name });
-        if (!trip) return res.send({ error: `Event "${name}" not found` });
-        const delTrip = await Trip.deleteOne({ name: name }, {})
-        if (delTrip.deletedCount === 0) return res.sendStatus(404);
+        const event = await Event.findOne({ name: name });
+        if (!event) return res.send({ error: `Event "${name}" not found` });
+        const delEvent = await Event.deleteOne({ name: name }, {})
+        if (delEvent.deletedCount === 0) return res.sendStatus(404);
         return res.status(200).send({ message: "Event deleted" });
     } catch(err) {
         return res.sendStatus(500);
