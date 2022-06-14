@@ -4,6 +4,22 @@ const { apiUrl, apiKey, allowedGuilds } = require('../config.json');
 const { DateTime } = require("luxon");
 const { MessageEmbed } = require('discord.js');
 
+function day_checker(date) {
+    if (date.seconds < 1) {
+        return "Event is today!";
+    }
+    if (date.hours < 1) {
+        return `${date.minutes} minutes`;
+    }
+    if (date.days === 1) {
+        return `${date.days} day`;
+    }
+    if (date.days === 0) {
+        return `${date.hours} hours and ${Math.ceil(date.minutes)} minutes`;
+    }
+    
+    return `${date.days} days`;
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -28,7 +44,7 @@ module.exports = {
                 )
                 .addStringOption(option =>
                     option.setName("date")
-                        .setDescription("Date of the event. Format: DD-MM-YYYY")
+                        .setDescription("Date of the event. Format: DD.MM.YYYY")
                 )
         
         )
@@ -60,13 +76,13 @@ module.exports = {
                 return await interaction.reply("Name must be between 1 and 25 characters");
             }
 
+            const date_object = DateTime.fromFormat(date, "d.M.yyyy").setZone("Europe/Helsinki");
 
-            const date_object = DateTime.fromFormat(date, "d-M-yyyy");
             if (date_object.invalid !== null) {
-                return await interaction.reply("Date must be in format DD-MM-YYYY");
+                return await interaction.reply("Date must be in format DD.MM.YYYY");
             }
 
-            date = date_object.toFormat("dd-MM-yyyy");
+            date = date_object.toFormat("dd.MM.yyyy");
             
             try {
                 const response = await axios.post(`${apiUrl}/events`, { author: author, name: name, date: date }, { headers: { authorization: apiKey } });
@@ -74,7 +90,7 @@ module.exports = {
                     return await interaction.reply(response.data.error);
                 }
 
-                return await interaction.reply(`New event added: "${response.data.name}"`);
+                return await interaction.reply(`Event \`${response.data.name}\` added to the database`);
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);
             }
@@ -97,16 +113,10 @@ module.exports = {
                 let event_name = response.data[0].name;
 
                 //calculate days until event
-                const until_event = DateTime.fromISO(event_date).diff(DateTime.now(), "days").toObject();
-                let msg = `TJ of "${event_name}" is currently ${Math.round(until_event.days + 1)} ${until_event.days === 1 ? "day" : "days"}`;
-                
-                if (Math.round(until_event.days + 1) === 0) {
-                    msg = `"${event_name}" is today!`;
-                }
+                const until_event = DateTime.fromISO(event_date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
 
-                if (Math.round(until_event.days + 1) < 0) {
-                    msg = `Event is over!`
-                }
+                let msg = `TJ of \`${event_name}\` is currently ${day_checker(until_event)}`;
+                
                 return await interaction.reply(msg);
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);
@@ -134,16 +144,14 @@ module.exports = {
 
                 //Create an embed
                 response.data.forEach(event => {
-                    let days = Math.round(DateTime.fromISO(event.date).diff(DateTime.now(), "days").toObject().days+1);
-                    let msg = `TJ: ${days} \nDate: ${DateTime.fromISO(event.date).toFormat("dd-MM-yyyy")}`
-                    if (days === 0) {
-                        msg = `Event is today today!`
-
+                    let event_object = DateTime.fromISO(event.date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
+                    let tj = day_checker(event_object);
+                    let msg = `TJ: ${tj}`
+                    if (event_object.seconds < 1) {
+                        msg = day_checker(event_object);
                     }
-                    if (days < 0) {
-                        msg = `Event is over!`
-                    }
-                    eventEmbed.addField(event.name, msg);
+                    var title = `${event.name} - ${DateTime.fromISO(event.date).toFormat("d.M.yyyy")}`;
+                    eventEmbed.addField(title, msg);
                 });
                 
                 return await interaction.reply({ embeds: [eventEmbed] });
@@ -162,7 +170,7 @@ module.exports = {
                     return await interaction.reply(response.data.error);
                 }
 
-                return await interaction.reply(`Event "${name}" deleted`);
+                return await interaction.reply(`Event \`${name}\` deleted`);
 
             } catch (err) {
                 return await interaction.reply(`Request to backend failed with ${err}`);

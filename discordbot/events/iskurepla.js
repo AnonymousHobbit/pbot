@@ -38,7 +38,7 @@ module.exports = {
 
 			try {
 				const response = await axios.post(`${apiUrl}/replas`, { author: author, repla: repla_to_add }, { headers: { authorization: apiKey } });
-				return await interaction.reply(`New repla added: "${response.data.repla}"`);
+				return await interaction.reply(`New repla added:  \`${response.data.repla}\``);
 			} catch (err) {
 				return await interaction.reply(`Request to backend failed with ${err}`);
 			}
