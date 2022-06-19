@@ -115,7 +115,7 @@ module.exports = {
                 //calculate days until event
                 const until_event = DateTime.fromISO(event_date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
 
-                let msg = `TJ of \`${event_name}\` is currently ${day_checker(until_event)}`;
+                let msg = `TJ of \`${event_name}\` is currently ${until_event.days} days, ${until_event.hours} hours and ${until_event.minutes} minutes`;
                 
                 return await interaction.reply(msg);
             } catch (err) {
