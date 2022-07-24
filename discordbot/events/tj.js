@@ -18,7 +18,7 @@ function day_checker(date) {
         return `${date.hours} hours and ${Math.ceil(date.minutes)} minutes`;
     }
     
-    return `${date.days} days`;
+    return `${date.days} days and ${date.hours} hours`;
 }
 
 module.exports = {
@@ -113,7 +113,7 @@ module.exports = {
 
                 //calculate days until event
                 const until_event = DateTime.fromISO(event_date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
-
+                console.log(until_event)
                 let msg = `TJ of \`${event_name}\` is currently ${until_event.days} days, ${until_event.hours} hours and ${until_event.minutes} minutes`;
                 
                 return await interaction.reply(msg);
@@ -146,7 +146,7 @@ module.exports = {
                     let event_object = DateTime.fromISO(event.date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
                     let count = day_checker(event_object);
                     let msg = count == 1 ? `Event is today!` : `Event is in ${count}`;
-                    
+
                     var title = `${event.name} - ${DateTime.fromISO(event.date).setZone("Europe/Helsinki").toFormat("d.M.yyyy")}`;
                     eventEmbed.addField(title, msg);
                 });
