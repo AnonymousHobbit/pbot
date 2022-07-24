@@ -5,10 +5,10 @@ const { DateTime } = require("luxon");
 const { MessageEmbed } = require('discord.js');
 
 function day_checker(date) {
-    if (date.seconds < 1) {
-        return "Event is today!";
+    if (date.days === 0 && date.hours === 0 && date.minutes === 0 && date.seconds < 1) {
+        return 1;
     }
-    if (date.hours < 1) {
+    if (date.days === 0 && date.hours === 0) {
         return `${date.minutes} minutes`;
     }
     if (date.days === 1) {
@@ -81,9 +81,8 @@ module.exports = {
             if (date_object.invalid !== null) {
                 return await interaction.reply("Date must be in format DD.MM.YYYY");
             }
-
             date = date_object.toFormat("dd.MM.yyyy");
-            
+
             try {
                 const response = await axios.post(`${apiUrl}/events`, { author: author, name: name, date: date }, { headers: { authorization: apiKey } });
                 if (response.data.error) {
@@ -145,11 +144,9 @@ module.exports = {
                 //Create an embed
                 response.data.forEach(event => {
                     let event_object = DateTime.fromISO(event.date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
-                    let tj = day_checker(event_object);
-                    let msg = `TJ: ${tj}`
-                    if (event_object.seconds < 1) {
-                        msg = day_checker(event_object);
-                    }
+                    let count = day_checker(event_object);
+                    let msg = count == 1 ? `Event is today!` : `Event is in ${count}`;
+                    
                     var title = `${event.name} - ${DateTime.fromISO(event.date).setZone("Europe/Helsinki").toFormat("d.M.yyyy")}`;
                     eventEmbed.addField(title, msg);
                 });
