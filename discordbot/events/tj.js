@@ -113,8 +113,8 @@ module.exports = {
                 let event_name = response.data[0].name;
 
                 //calculate days until event
-                const until_event = DateTime.fromISO(event_date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
-
+                const until_event = DateTime.fromISO(event_date).diff(DateTime.now().setZone("Europe/Helsinki"), ["days", "hours", "minutes", "seconds"]).toObject();
+                console.log(until_event)
                 let msg = `TJ of \`${event_name}\` is currently ${until_event.days} days, ${until_event.hours} hours and ${until_event.minutes} minutes`;
                 
                 return await interaction.reply(msg);
@@ -150,6 +150,7 @@ module.exports = {
                     if (event_object.seconds < 1) {
                         msg = day_checker(event_object);
                     }
+                    //console.log(event.date)
                     var title = `${event.name} - ${DateTime.fromISO(event.date).toFormat("d.M.yyyy")}`;
                     eventEmbed.addField(title, msg);
                 });
