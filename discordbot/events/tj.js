@@ -113,7 +113,7 @@ module.exports = {
                 let event_name = response.data[0].name;
 
                 //calculate days until event
-                const until_event = DateTime.fromISO(event_date).diff(DateTime.now().setZone("Europe/Helsinki"), ["days", "hours", "minutes", "seconds"]).toObject();
+                const until_event = DateTime.fromISO(event_date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
 
                 let msg = `TJ of \`${event_name}\` is currently ${until_event.days} days, ${until_event.hours} hours and ${until_event.minutes} minutes`;
                 
