@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
             return res.send({ error: "Name must be between 1 and 25 characters" });
         }
         //console.log(req.body.date)
-        const date_object = DateTime.fromFormat(req.body.date, "d.M.yyyy").setZone("Europe/Helsinki");
+        const date_object = DateTime.fromFormat(req.body.date, "d.M.yyyy");
         
         if (date_object.invalid !== null) {
             return res.send({ error: "Date is invalid" });
