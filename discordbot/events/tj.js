@@ -5,20 +5,24 @@ const { DateTime } = require("luxon");
 const { MessageEmbed } = require('discord.js');
 
 function day_checker(date) {
-    if (date.days === 0 && date.hours === 0 && date.minutes === 0 && date.seconds < 1) {
+    console.log(date)
+    if (date.days < 0) {
+        return 'Event has already passed'
+    }
+    if (date.days < 1 && date.hours < 1 && date.minutes < 1 && date.seconds < 1) {
         return 1;
     }
     if (date.days === 0 && date.hours === 0) {
-        return `${date.minutes} minutes`;
+        return `Event is in ${date.minutes} minutes`;
     }
     if (date.days === 1) {
-        return `${date.days} day`;
+        return `Event is in ${date.days} day`;
     }
     if (date.days === 0) {
-        return `${date.hours} hours and ${Math.ceil(date.minutes)} minutes`;
+        return `Event is in ${date.hours} hours and ${Math.ceil(date.minutes)} minutes`;
     }
     
-    return `${date.days} days and ${date.hours} hours`;
+    return `Event is in ${date.days} days and ${date.hours} hours`;
 }
 
 module.exports = {
@@ -113,7 +117,13 @@ module.exports = {
 
                 //calculate days until event
                 const until_event = DateTime.fromISO(event_date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
-                console.log(until_event)
+                if (until_event.days < 0) {
+                    return await interaction.reply("Event has already passed");
+                }
+
+                if (day_checker(until_event) === 1) {
+                    return await interaction.reply(`Event \`${event_name}\` is today!`);
+                }
                 let msg = `TJ of \`${event_name}\` is currently ${until_event.days} days, ${until_event.hours} hours and ${until_event.minutes} minutes`;
                 
                 return await interaction.reply(msg);
@@ -145,10 +155,11 @@ module.exports = {
                 response.data.forEach(event => {
                     let event_object = DateTime.fromISO(event.date).diff(DateTime.now(), ["days", "hours", "minutes", "seconds"]).toObject();
                     let count = day_checker(event_object);
-                    let msg = count == 1 ? `Event is today!` : `Event is in ${count}`;
+                    console.log(count)
+                    let msg = count == 1 ? `Event is today!` : count;
 
                     var title = `${event.name} - ${DateTime.fromISO(event.date).setZone("Europe/Helsinki").toFormat("d.M.yyyy")}`;
-                    eventEmbed.addField(title, msg);
+                    eventEmbed.addFields(title, msg);
                 });
                 
                 return await interaction.reply({ embeds: [eventEmbed] });
